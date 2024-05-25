@@ -7,11 +7,11 @@ from discord import app_commands
 from discord.utils import get
 import random
 import datetime
-import server
+#import server
 from guild import *
 from acb import *
 import aiohttp
-server.b()
+#server.b()
 
 
 intents = discord.Intents.default()
