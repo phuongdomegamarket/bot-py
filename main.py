@@ -12,7 +12,8 @@ from guild import *
 from acb import *
 import aiohttp
 #server.b()
-
+USERNAME=os.environ.get('username')
+PASSWORD=os.environ.get('password')
 
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
@@ -53,7 +54,7 @@ INFO=False
 async def on_ready():
     global INFO
     guild = client.get_guild(GUILDID)
-    rs=await login('llyllr','244466666_Qwe!@#')
+    rs=await login(USERNAME,PASSWORD)
     if rs:
       INFO=rs
       
@@ -103,12 +104,12 @@ async def getTransAcb(guild):
               timestr=f'{day}/{month}/{time.year} {hour}:{minute}:{second}'
               thread=await basic['acbCh'].create_thread(name=('+ ' if item['type'].lower()=='in' else '- ')+amount+' '+item['currency']+'/ '+str(item['activeDatetime']),content='\nSố tiền: **'+amount+' '+item['currency']+'**\nNội dung: **'+item['description']+'**\nBiến động trên STK: **'+str(item['account'])+'**\nThời điểm: **'+timestr.split(' ')[1]+'** ngày **'+timestr.split(' ')[0]+'**'+st+'\n@everyone',applied_tags =applied_tags )
         else:
-          rs=await login('llyllr','244466666_Qwe!@#')
+          rs=await login(USERNAME,PASSWORD)
           if rs:
             INFO=rs
     except Exception as error:
       print(error)
-      rs=await login('llyllr','244466666_Qwe!@#')
+      rs=await login(USERNAME,PASSWORD)
       if rs:
         INFO=rs
               
