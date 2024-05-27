@@ -11,4 +11,8 @@ async def getBasic(guild):
               tcbCh=channel
             elif 'acb' in channel.name:
               acbCh=channel
-    return {'mbCh':mbCh,'acbCh':acbCh,'tcbCh':tcbCh}
+      elif 'bot sessions' in category.name.lower():
+         for channel in category.channels:
+            if 'banks' in channel.name.lower():
+               banksCh=channel
+    return {'mbCh':mbCh,'acbCh':acbCh,'tcbCh':tcbCh,'banksCh':banksCh}

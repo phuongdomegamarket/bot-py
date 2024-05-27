@@ -52,14 +52,44 @@ def correctSingleQuoteJSON(s):
 INFO=False
 @client.event
 async def on_ready():
-    global INFO
+    global INFO,RESULT
     guild = client.get_guild(GUILDID)
     rs=await login(USERNAME,PASSWORD)
-    if rs:
-      INFO=rs
-      
-    if not getTransAcb.is_running():
-      getTransAcb.start(guild)
+    RESULT=await getBasic(guild)
+    acbThread=None
+    for thread in RESULT['banksCh'].threads:
+      if 'acb' in thread.name:
+        acbThread=thread
+    if not acbThread:
+      await RESULT['banksCh'].create_thread(name='acb',content='Sessions are `1` actived')
+      if rs:
+        INFO=rs
+        
+      if not getTransAcb.is_running():
+        getTransAcb.start(guild)
+    else:
+      msgs=[msg async for msg in acbThread.history(oldest_first=True)]
+      old=re.search('Sessions are `(.*?)` actived',msgs[0].content).group(1)
+      i=int(old)+1
+      await msgs[0].edit(content='Sessions are `'+str(i)+'` actived')
+    return 1
+    
+    
+@client.event
+async def  on_disconnect():
+  global RESULT
+  if RESULT:
+    acbThread=None
+    for thread in RESULT['banksCh'].threads:
+      if 'acb' in thread.name:
+        acbThread=thread
+    if acbThread:
+      msgs=[msg async for msg in acbThread.history()]
+      if len(msgs)>0:
+        old=re.search('.*Sessions are `(.*?)`.*',msgs[0].content).group(1)
+        i=int(old)-1 if int(old)>0 else 0
+        await msgs[0].edit(content='Sessions are `'+str(i)+'` actived')
+
 @tasks.loop(seconds=1)
 async def getTransAcb(guild): 
   global INFO
