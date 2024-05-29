@@ -11,7 +11,6 @@ import server
 from guild import *
 from acb import *
 import aiohttp
-server.b()
 USERNAME=os.environ.get('username')
 PASSWORD=os.environ.get('password')
 
@@ -136,4 +135,4 @@ async def getTransAcb(guild):
       if rs:
         INFO=rs
               
-client.run(os.environ.get('botToken'))
+client.run('MTIzNjk2MzY3NzQ4ODI4NzgwNA.Ggya4m.kGDYOlqqPxsMhzguK4xZUVEfBFoivIuDVvWv3g')#os.environ.get('botToken'))
