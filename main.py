@@ -55,6 +55,7 @@ async def on_ready():
     try:
       req=requests.get('http://localhost:8888')
       print(req.status_code)
+      await client.close()
     except:
       server.b()
       guild = client.get_guild(GUILDID)
