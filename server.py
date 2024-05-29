@@ -11,7 +11,7 @@ def main():
     sys.exit("Error message")
 
 def run():
-    app.run(host='0.0.0.0', port=8501)
+    app.run(host='0.0.0.0', port=8888)
 
 def b():
     server = Thread(target=run)
