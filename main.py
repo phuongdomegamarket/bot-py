@@ -47,7 +47,7 @@ def correctSingleQuoteJSON(s):
         escaped = (c == "\\") # check for an escape character
         rstr += c # append the correct json
     
-    return rstr
+    return rstr 
 INFO=False
 BASE_URL='https://bot-py-8t7nnjtaylrcjeqj8tevuh.streamlit.app/'
 @client.event
