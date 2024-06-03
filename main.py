@@ -56,12 +56,15 @@ async def on_ready():
     try:
       req=requests.get('http://localhost:8888')
       print(req.status_code)
-      url=BASE_URL+'api/v2/app/status'
       headers={
           'user-agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:126.0) Gecko/20100101 Firefox/126.0',
           'cookie':'streamlit_session=MTcxNzEyNDU0OHxGaHB4QVcyb2FlY3pBekxHeHIzb216Y2ZWamJZWVNBV1UxT0o0Y3pjRE1OQnpoOG1RWWJzaG93d0VTX21LS0V4UHM3eHpPT3hGaHptMnN2R1ZIbklpSWlmVzhwNEk0Rl9GOVEwYzV2cHVTaGROckR6ZW5NYW1qVEpfUjZNWU9uTVkyMV9fRl93T3o2eU9tWGxPWFZidGN5VGI4NVp4S0ctejJJVFZUQ3U4bDZkS0tqR1VfTFJEMm5FWEE9PXyD_6bGTX1dn6FDz5V25Su0pDW9WWJ15JAdYPEW-4YgxA==; _dd_s=logs=1&id=b034c255-adbb-44e5-b8b6-b12b60265ea4&created=1717124549790&expire=1717125485141; _streamlit_csrf=MTcxNzEyNDU1MHxJbFJyVm5sa1JGcE5WMGRhYTJNeVNtbFRhelZoVm14c1RtRkZSbmxTTURGMlkwaHdWRTFzUVRCU1Z6ZzlJZz09fGUjUknwumEy8bKpr3DXVnEMldJSXLqVj8Hi7yXrA7Mm',
             'x-csrf-token':'aXF0QkMzQ2t2Rm43YUxqTEJLS1Zya01BckQ4TXdOemInNAY2dX8bDRI1DFUrAjAaGwYjFwAsAC4CPmt/J3o/DQ=='
       }
+      req=requests.get(BASE_URL,headers=headers)
+      print(req.status_code)
+      url=BASE_URL+'api/v2/app/status'
+      
       req=requests.get(url,headers=headers)
       js=req.json()
       if js['status']!=5:
