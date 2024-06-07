@@ -67,7 +67,7 @@ async def on_ready():
         if rs:
             INFO=rs
             if not getTransAcb.is_running():
-            getTransAcb.start(guild)
+                getTransAcb.start(guild)
 
     
     
