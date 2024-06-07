@@ -65,9 +65,9 @@ async def on_ready():
         rs=await login(USERNAME,PASSWORD)
         RESULT=await getBasic(guild)
         if rs:
-        INFO=rs
-        if not getTransAcb.is_running():
-        getTransAcb.start(guild)
+            INFO=rs
+            if not getTransAcb.is_running():
+            getTransAcb.start(guild)
 
     
     
