@@ -59,15 +59,14 @@ async def on_ready():
       print('Client closed')
       sys.exit('Exited')  
     except Exception as error:
-        if 'No connection could be made because the target machine actively refused it' in str(error):
-          server.b()
-          guild = client.get_guild(GUILDID)
-          rs=await login(USERNAME,PASSWORD)
-          RESULT=await getBasic(guild)
-          if rs:
-            INFO=rs
-          if not getTransAcb.is_running():
-            getTransAcb.start(guild)
+      server.b()
+      guild = client.get_guild(GUILDID)
+      rs=await login(USERNAME,PASSWORD)
+      RESULT=await getBasic(guild)
+      if rs:
+        INFO=rs
+      if not getTransAcb.is_running():
+        getTransAcb.start(guild)
 
     
     
