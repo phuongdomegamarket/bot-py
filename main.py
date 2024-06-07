@@ -54,18 +54,19 @@ BASE_URL='https://bot-py-8t7nnjtaylrcjeqj8tevuh.streamlit.app/'
 async def on_ready():
     global INFO,RESULT
     try:
-      req=requests.get('http://localhost:8888')
-      print(req.status_code)
-      print('Client closed')
-      sys.exit('Exited')  
+        req=requests.get('http://localhost:8888')
+        print(req.status_code)
+        print('Client closed')
+        sys.exit('Exited')  
     except Exception as error:
-      server.b()
-      guild = client.get_guild(GUILDID)
-      rs=await login(USERNAME,PASSWORD)
-      RESULT=await getBasic(guild)
-      if rs:
+        print(error)
+        server.b()
+        guild = client.get_guild(GUILDID)
+        rs=await login(USERNAME,PASSWORD)
+        RESULT=await getBasic(guild)
+        if rs:
         INFO=rs
-      if not getTransAcb.is_running():
+        if not getTransAcb.is_running():
         getTransAcb.start(guild)
 
     
