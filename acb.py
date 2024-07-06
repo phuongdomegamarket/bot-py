@@ -9,7 +9,7 @@ import aiohttp
 import base64,re
 
 async def login(user,password):
-  url='https://apiapp.acb.com.vn/mb/auth/tokens'
+  url='https://apiapp.acb.com.vn/mb/v2/auth/tokens'
   data={
     "username":user,
     "password": password,
@@ -24,7 +24,7 @@ async def login(user,password):
         js=await res.json()
         headers['authorization']='Bearer '+js['refreshToken']
         refreshTk=js['refreshToken']
-        url='https://apiapp.acb.com.vn/mb/auth/refresh'
+        url='https://apiapp.acb.com.vn/mb/v2/auth/refresh'
         async with aiohttp.ClientSession(cookie_jar=aiohttp.CookieJar()) as session:
           async with session.post(url,headers=headers) as res:
             url='https://apiapp.acb.com.vn/mb/legacy/ss/cs/bankservice/transfers/list/account-payment'
