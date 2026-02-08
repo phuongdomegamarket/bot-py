@@ -62,6 +62,17 @@ def correctSingleQuoteJSON(s):
     return rstr
 
 
+if "log_queue" not in st.session_state:
+    st.session_state["log_queue"] = queue.Queue()
+
+if "logs" not in st.session_state:
+    st.session_state["logs"] = []
+
+if "task_running" not in st.session_state:
+    st.session_state["task_running"] = False
+processed_thread = set()
+pause_watching = False
+
 INFO = False
 BASE_URL = "https://bot-py-8t7nnjtaylrcjeqj8tevuh.streamlit.app/"
 
@@ -230,53 +241,53 @@ def myStyle(log_queue):
     client.run(os.environ.get("botToken"))
     thread = None
 
-    @st.cache_resource
-    def initialize_heavy_stuff():
-        global thread
-        # Đây là phần chỉ chạy ĐÚNG 1 LẦN khi server khởi động (hoặc khi cache miss)
-        with st.spinner("running your scripts..."):
-            thread = threading.Thread(
-                target=myStyle, args=(st.session_state.log_queue,)
-            )
-            thread.start()
-            print(
-                "Heavy initialization running..."
-            )  # bạn sẽ thấy log này chỉ 1 lần trong console/cloud log
 
-            return {
-                "model": "loaded_successfully",
-                "timestamp": time.time(),
-                "db_status": "connected",
-            }
+@st.cache_resource
+def initialize_heavy_stuff():
+    global thread
+    # Đây là phần chỉ chạy ĐÚNG 1 LẦN khi server khởi động (hoặc khi cache miss)
+    with st.spinner("running your scripts..."):
+        thread = threading.Thread(target=myStyle, args=(st.session_state.log_queue,))
+        thread.start()
+        print(
+            "Heavy initialization running..."
+        )  # bạn sẽ thấy log này chỉ 1 lần trong console/cloud log
 
-    # Trong phần chính của app
-    st.title("my style")
+        return {
+            "model": "loaded_successfully",
+            "timestamp": time.time(),
+            "db_status": "connected",
+        }
 
-    # Dòng này đảm bảo: chạy 1 lần duy nhất, mọi user đều dùng chung kết quả
-    result = initialize_heavy_stuff()
 
-    st.success("The system is ready!")
-    st.write("Result:")
-    st.json(result)
-    with st.status("Processing...", expanded=True) as status:
-        placeholder = st.empty()
-        logs = []
-        while (thread and thread.is_alive()) or not st.session_state.log_queue.empty():
-            try:
-                level, message = st.session_state.log_queue.get_nowait()
-                logs.append((level, message))
+# Trong phần chính của app
+st.title("my style")
 
-                with placeholder.container():
-                    for lvl, msg in logs:
-                        if lvl == "info":
-                            st.write(msg)
-                        elif lvl == "success":
-                            st.success(msg)
-                        elif lvl == "error":
-                            st.error(msg)
+# Dòng này đảm bảo: chạy 1 lần duy nhất, mọi user đều dùng chung kết quả
+result = initialize_heavy_stuff()
 
-                time.sleep(0.2)
-            except queue.Empty:
-                time.sleep(0.3)
+st.success("The system is ready!")
+st.write("Result:")
+st.json(result)
+with st.status("Processing...", expanded=True) as status:
+    placeholder = st.empty()
+    logs = []
+    while (thread and thread.is_alive()) or not st.session_state.log_queue.empty():
+        try:
+            level, message = st.session_state.log_queue.get_nowait()
+            logs.append((level, message))
 
-        status.update(label="Hoàn thành!", state="complete", expanded=False)
+            with placeholder.container():
+                for lvl, msg in logs:
+                    if lvl == "info":
+                        st.write(msg)
+                    elif lvl == "success":
+                        st.success(msg)
+                    elif lvl == "error":
+                        st.error(msg)
+
+            time.sleep(0.2)
+        except queue.Empty:
+            time.sleep(0.3)
+
+    status.update(label="Hoàn thành!", state="complete", expanded=False)
