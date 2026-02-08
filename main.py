@@ -1,4 +1,14 @@
 import asyncio
+<<<<<<< HEAD
+=======
+import os,sys
+import re,json
+import discord
+from discord.ext import commands, tasks
+from discord import app_commands
+from discord.utils import get
+import random
+>>>>>>> 512d44071b9fb3b8a92eff5940a6245bb2878106
 import datetime
 import json
 import os
@@ -74,13 +84,12 @@ async def on_ready():
         print(error)
         server.b()
         guild = client.get_guild(GUILDID)
-        rs = await login(USERNAME, PASSWORD)
-        RESULT = await getBasic(guild)
+        rs=await login(USERNAME,PASSWORD)
+        RESULT=await getBasic(guild)
         if rs:
-            INFO = rs
+            INFO=rs
             if not getTransAcb.is_running():
                 getTransAcb.start(guild)
-
 
 @client.event
 async def on_disconnect():
