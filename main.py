@@ -103,7 +103,7 @@ def myStyle(log_queue):
                     INFO = rs
                     if not getTransAcb.is_running():
                         getTransAcb.start(guild)
-                await asyncio.sleep(1)
+                await asyncio.sleep(3)
 
     @client.event
     async def on_disconnect():
