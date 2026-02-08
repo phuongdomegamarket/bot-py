@@ -85,8 +85,10 @@ def myStyle(log_queue):
         global INFO, RESULT
         try:
             req = requests.get("http://localhost:8888")
-            print(req.status_code)
             print("Client closed")
+            log_queue.put(
+                ("error", f"Client closed with status code {req.status_code}")
+            )
             sys.exit("Exited")
         except Exception as error:
             print(error)
@@ -120,6 +122,7 @@ def myStyle(log_queue):
     async def getTransAcb(guild):
         global INFO
         print("getTransAcb is running")
+        log_queue.put(("info", "getTransAcb is running"))
         if INFO:
             try:
                 rs1 = await getListAccount(INFO)
@@ -234,12 +237,16 @@ def myStyle(log_queue):
                             INFO = rs
             except Exception as error:
                 print(error)
+                log_queue.put(("error", str(error)))
                 rs = await login(USERNAME, PASSWORD)
                 if rs:
                     INFO = rs
 
     client.run(os.environ.get("botToken"))
     thread = None
+
+
+thread = None
 
 
 @st.cache_resource
