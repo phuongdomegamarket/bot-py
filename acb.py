@@ -19,6 +19,7 @@ async def login(user, password):
         "password": password,
         "clientId": "iuSuHYVufIUuNIREV0FB9EoLn9kHsDbm",
     }
+    headers = {"user-agent": "ACB-MBA/5 CFNetwork/1325.0.1 Darwin/21.1.0"}
     async with aiohttp.ClientSession(cookie_jar=aiohttp.CookieJar()) as session:
         async with session.post(url, headers=headers, json=data) as res:
             if res.status < 400:
