@@ -55,38 +55,50 @@ async def login(user, password):
 
 
 async def getRefreshTk(headers):
-    url = "https://apiapp.acb.com.vn/mb/auth/refresh"
-    headers["authorization"] = "Bearer " + headers["refreshTk"]
-    async with aiohttp.ClientSession(cookie_jar=aiohttp.CookieJar()) as session:
-        async with session.post(url, headers=headers) as res:
-            if res.status < 400:
-                js = await res.json()
-                headers["authorization"] = "Bearer " + js["accessToken"]
-                print(headers["username"] + " get refresh token success")
-                return {
-                    headers[""] + "headers": headers,
-                    "refreshTk": headers["refreshTk"],
-                    "username": headers["username"],
-                }
+    try:
+        url = "https://apiapp.acb.com.vn/mb/auth/refresh"
+        headers["authorization"] = "Bearer " + headers["refreshTk"]
+        async with aiohttp.ClientSession(cookie_jar=aiohttp.CookieJar()) as session:
+            async with session.post(url, headers=headers) as res:
+                if res.status < 400:
+                    js = await res.json()
+                    headers["authorization"] = "Bearer " + js["accessToken"]
+                    print(headers["username"] + " get refresh token success")
+                    return {
+                        headers[""] + "headers": headers,
+                        "refreshTk": headers["refreshTk"],
+                        "username": headers["username"],
+                    }
+    except Exception as error:
+        print(error)
+        return False
 
 
 async def getListAccount(headers):
-    url = "https://apiapp.acb.com.vn/mb/legacy/ss/cs/bankservice/transfers/list/account-payment"
-    async with aiohttp.ClientSession(cookie_jar=aiohttp.CookieJar()) as session:
-        async with session.get(url, headers=headers["headers"]) as res:
-            if res.status < 400:
-                js = await res.json()
-                print(headers["username"] + " get list account success")
-                return {"list": js["data"]}
+    try:
+        url = "https://apiapp.acb.com.vn/mb/legacy/ss/cs/bankservice/transfers/list/account-payment"
+        async with aiohttp.ClientSession(cookie_jar=aiohttp.CookieJar()) as session:
+            async with session.get(url, headers=headers["headers"]) as res:
+                if res.status < 400:
+                    js = await res.json()
+                    print(headers["username"] + " get list account success")
+                    return {"list": js["data"]}
+            return False
+    except Exception as error:
+        print(error)
         return False
 
 
 async def getBalance(headers, id):
-    url = "https://apiapp.acb.com.vn/mb/legacy/ss/cs/person/transaction-history/list?account=15895127&transactionType=&from=&to=&min=&max="
-    async with aiohttp.ClientSession(cookie_jar=aiohttp.CookieJar()) as session:
-        async with session.get(url, headers=headers["headers"]) as res:
-            if res.status < 400:
-                js = await res.json()
-                print(headers["username"] + " get balance success")
-                return {"data": js["data"]}
-            return False
+    try:
+        url = "https://apiapp.acb.com.vn/mb/legacy/ss/cs/person/transaction-history/list?account=15895127&transactionType=&from=&to=&min=&max="
+        async with aiohttp.ClientSession(cookie_jar=aiohttp.CookieJar()) as session:
+            async with session.get(url, headers=headers["headers"]) as res:
+                if res.status < 400:
+                    js = await res.json()
+                    print(headers["username"] + " get balance success")
+                    return {"data": js["data"]}
+                return False
+    except Exception as error:
+        print(error)
+        return False
