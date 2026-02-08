@@ -94,12 +94,16 @@ def myStyle(log_queue):
             print(error)
             server.b()
             guild = client.get_guild(GUILDID)
-            rs = await login(USERNAME, PASSWORD)
-            RESULT = await getBasic(guild)
-            if rs:
-                INFO = rs
-                if not getTransAcb.is_running():
-                    getTransAcb.start(guild)
+            stop = False
+            while not stop:
+                rs = await login(USERNAME, PASSWORD)
+                RESULT = await getBasic(guild)
+                if rs:
+                    stop = True
+                    INFO = rs
+                    if not getTransAcb.is_running():
+                        getTransAcb.start(guild)
+                await asyncio.sleep(1)
 
     @client.event
     async def on_disconnect():
