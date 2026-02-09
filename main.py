@@ -103,6 +103,7 @@ def myStyle(log_queue):
                     INFO = rs
                     if not getTransAcb.is_running():
                         getTransAcb.start(guild)
+                log_queue.put(("info", "Trying login again"))
                 await asyncio.sleep(3)
 
     @client.event
