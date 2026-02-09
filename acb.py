@@ -108,7 +108,7 @@ async def getListAccount(headers):
         url = "https://apiapp.acb.com.vn/mb/legacy/ss/cs/bankservice/transfers/list/account-payment"
         res = requests.get(url, headers=headers["headers"])
         if res.status_code < 400:
-            js = await res.json()
+            js = res.json()
             print(headers["username"] + " get list account success")
             return {"list": js["data"]}
         return False
@@ -129,7 +129,7 @@ async def getBalance(headers, id):
         url = "https://apiapp.acb.com.vn/mb/legacy/ss/cs/person/transaction-history/list?account=15895127&transactionType=&from=&to=&min=&max="
         res = requests.get(url, headers=headers["headers"])
         if res.status_code < 400:
-            js = await res.json()
+            js = res.json()
             print(headers["username"] + " get balance success")
             return {"data": js["data"]}
         return False
