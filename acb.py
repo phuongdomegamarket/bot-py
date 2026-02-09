@@ -22,8 +22,6 @@ async def login(user, password):
             "clientId": "iuSuHYVufIUuNIREV0FB9EoLn9kHsDbm",
         }
         headers = {"user-agent": "ACB-MBA/5 CFNetwork/1325.0.1 Darwin/21.1.0"}
-        connector = aiohttp.TCPConnector(family=0)
-        timeout = aiohttp.ClientTimeout(total=None, connect=None, sock_connect=None)
         res = requests.post(url, headers=headers, json=data)
         if res.status_code < 400:
             js = res.json()
