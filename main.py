@@ -12,7 +12,6 @@ import threading
 import aiohttp
 import discord
 import streamlit as st
-from aiohttp.resolver import AsyncResolver
 from discord import app_commands
 from discord.ext import commands, tasks
 from discord.utils import get

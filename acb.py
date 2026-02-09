@@ -9,16 +9,10 @@ from urllib.parse import unquote
 
 import aiohttp
 import requests
-from aiohttp.resolver import AsyncResolver
 from bs4 import BeautifulSoup as Bs4
 
 
 async def login(user, password):
-    # Dùng public DNS (Cloudflare, Google, Quad9…)
-    resolver = AsyncResolver(nameservers=["1.1.1.1", "1.0.0.1"])
-
-    connector = aiohttp.TCPConnector(resolver=resolver)
-
     try:
         url = "https://apiapp.acb.com.vn/mb/v2/auth/tokens"
         data = {
@@ -27,9 +21,7 @@ async def login(user, password):
             "clientId": "iuSuHYVufIUuNIREV0FB9EoLn9kHsDbm",
         }
         headers = {"user-agent": "ACB-MBA/5 CFNetwork/1325.0.1 Darwin/21.1.0"}
-        async with aiohttp.ClientSession(
-            connector=connector, cookie_jar=aiohttp.CookieJar()
-        ) as session:
+        async with aiohttp.ClientSession(cookie_jar=aiohttp.CookieJar()) as session:
             try:
                 async with session.post(url, headers=headers, json=data) as res:
                     if res.status < 400:
@@ -64,16 +56,9 @@ async def login(user, password):
 
 async def getRefreshTk(headers):
     try:
-        # Dùng public DNS (Cloudflare, Google, Quad9…)
-        resolver = AsyncResolver(nameservers=["1.1.1.1", "1.0.0.1"])
-
-        connector = aiohttp.TCPConnector(resolver=resolver)
-
         url = "https://apiapp.acb.com.vn/mb/auth/refresh"
         headers["authorization"] = "Bearer " + headers["refreshTk"]
-        async with aiohttp.ClientSession(
-            connector=connector, cookie_jar=aiohttp.CookieJar()
-        ) as session:
+        async with aiohttp.ClientSession(cookie_jar=aiohttp.CookieJar()) as session:
             async with session.post(url, headers=headers) as res:
                 if res.status < 400:
                     js = await res.json()
@@ -91,15 +76,8 @@ async def getRefreshTk(headers):
 
 async def getListAccount(headers):
     try:
-        # Dùng public DNS (Cloudflare, Google, Quad9…)
-        resolver = AsyncResolver(nameservers=["1.1.1.1", "1.0.0.1"])
-
-        connector = aiohttp.TCPConnector(resolver=resolver)
-
         url = "https://apiapp.acb.com.vn/mb/legacy/ss/cs/bankservice/transfers/list/account-payment"
-        async with aiohttp.ClientSession(
-            connector=connector, cookie_jar=aiohttp.CookieJar()
-        ) as session:
+        async with aiohttp.ClientSession(cookie_jar=aiohttp.CookieJar()) as session:
             async with session.get(url, headers=headers["headers"]) as res:
                 if res.status < 400:
                     js = await res.json()
@@ -113,15 +91,8 @@ async def getListAccount(headers):
 
 async def getBalance(headers, id):
     try:
-        # Dùng public DNS (Cloudflare, Google, Quad9…)
-        resolver = AsyncResolver(nameservers=["1.1.1.1", "1.0.0.1"])
-
-        connector = aiohttp.TCPConnector(resolver=resolver)
-
         url = "https://apiapp.acb.com.vn/mb/legacy/ss/cs/person/transaction-history/list?account=15895127&transactionType=&from=&to=&min=&max="
-        async with aiohttp.ClientSession(
-            connector=connector, cookie_jar=aiohttp.CookieJar()
-        ) as session:
+        async with aiohttp.ClientSession(cookie_jar=aiohttp.CookieJar()) as session:
             async with session.get(url, headers=headers["headers"]) as res:
                 if res.status < 400:
                     js = await res.json()
