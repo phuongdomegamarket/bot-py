@@ -22,7 +22,12 @@ async def login(user, password):
             "clientId": "iuSuHYVufIUuNIREV0FB9EoLn9kHsDbm",
         }
         headers = {"user-agent": "ACB-MBA/5 CFNetwork/1325.0.1 Darwin/21.1.0"}
-        timeout = aiohttp.ClientTimeout(sock_connect=120, total=120)
+        timeout = aiohttp.ClientTimeout(
+            total=60,  # toàn bộ request (connect + read)
+            connect=0,  # 0 = vô hạn (giống requests)
+            sock_connect=120,  # tăng connect timeout lên 120s
+            sock_read=30,
+        )
         # res = requests.post(url, headers=headers, json=data)
         # if res.status_code < 400:
         #     js = res.json()
@@ -92,7 +97,12 @@ async def getRefreshTk(headers):
         #         "username": headers["username"],
         #     }
         # return False
-        timeout = aiohttp.ClientTimeout(sock_connect=120, total=120)
+        timeout = aiohttp.ClientTimeout(
+            total=60,  # toàn bộ request (connect + read)
+            connect=0,  # 0 = vô hạn (giống requests)
+            sock_connect=120,  # tăng connect timeout lên 120s
+            sock_read=30,
+        )
         async with aiohttp.ClientSession(
             cookie_jar=aiohttp.CookieJar(), timeout=timeout
         ) as session:
@@ -120,7 +130,12 @@ async def getListAccount(headers):
         #     print(headers["username"] + " get list account success")
         #     return {"list": js["data"]}
         # return False
-        timeout = aiohttp.ClientTimeout(sock_connect=120, total=120)
+        timeout = aiohttp.ClientTimeout(
+            total=60,  # toàn bộ request (connect + read)
+            connect=0,  # 0 = vô hạn (giống requests)
+            sock_connect=120,  # tăng connect timeout lên 120s
+            sock_read=30,
+        )
         async with aiohttp.ClientSession(
             cookie_jar=aiohttp.CookieJar(), timeout=timeout
         ) as session:
@@ -144,7 +159,12 @@ async def getBalance(headers, id):
         #     print(headers["username"] + " get balance success")
         #     return {"data": js["data"]}
         # return False
-        timeout = aiohttp.ClientTimeout(sock_connect=120, total=120)
+        timeout = aiohttp.ClientTimeout(
+            total=60,  # toàn bộ request (connect + read)
+            connect=0,  # 0 = vô hạn (giống requests)
+            sock_connect=120,  # tăng connect timeout lên 120s
+            sock_read=30,
+        )
         async with aiohttp.ClientSession(
             cookie_jar=aiohttp.CookieJar(), timeout=timeout
         ) as session:
