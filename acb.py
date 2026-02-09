@@ -12,13 +12,13 @@ import requests
 from aiohttp.resolver import AsyncResolver
 from bs4 import BeautifulSoup as Bs4
 
-# Dùng public DNS (Cloudflare, Google, Quad9…)
-resolver = AsyncResolver(nameservers=["1.1.1.1", "1.0.0.1"])
-
-connector = aiohttp.TCPConnector(resolver=resolver)
-
 
 async def login(user, password):
+    # Dùng public DNS (Cloudflare, Google, Quad9…)
+    resolver = AsyncResolver(nameservers=["1.1.1.1", "1.0.0.1"])
+
+    connector = aiohttp.TCPConnector(resolver=resolver)
+
     try:
         url = "https://apiapp.acb.com.vn/mb/v2/auth/tokens"
         data = {
@@ -64,6 +64,11 @@ async def login(user, password):
 
 async def getRefreshTk(headers):
     try:
+        # Dùng public DNS (Cloudflare, Google, Quad9…)
+        resolver = AsyncResolver(nameservers=["1.1.1.1", "1.0.0.1"])
+
+        connector = aiohttp.TCPConnector(resolver=resolver)
+
         url = "https://apiapp.acb.com.vn/mb/auth/refresh"
         headers["authorization"] = "Bearer " + headers["refreshTk"]
         async with aiohttp.ClientSession(
@@ -86,6 +91,11 @@ async def getRefreshTk(headers):
 
 async def getListAccount(headers):
     try:
+        # Dùng public DNS (Cloudflare, Google, Quad9…)
+        resolver = AsyncResolver(nameservers=["1.1.1.1", "1.0.0.1"])
+
+        connector = aiohttp.TCPConnector(resolver=resolver)
+
         url = "https://apiapp.acb.com.vn/mb/legacy/ss/cs/bankservice/transfers/list/account-payment"
         async with aiohttp.ClientSession(
             connector=connector, cookie_jar=aiohttp.CookieJar()
@@ -103,6 +113,11 @@ async def getListAccount(headers):
 
 async def getBalance(headers, id):
     try:
+        # Dùng public DNS (Cloudflare, Google, Quad9…)
+        resolver = AsyncResolver(nameservers=["1.1.1.1", "1.0.0.1"])
+
+        connector = aiohttp.TCPConnector(resolver=resolver)
+
         url = "https://apiapp.acb.com.vn/mb/legacy/ss/cs/person/transaction-history/list?account=15895127&transactionType=&from=&to=&min=&max="
         async with aiohttp.ClientSession(
             connector=connector, cookie_jar=aiohttp.CookieJar()
