@@ -7,3 +7,4 @@ msgpack
 flask
 dotenv
 aiodns
+starlette>=0.41.0
