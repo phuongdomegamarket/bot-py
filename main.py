@@ -11,19 +11,40 @@ import threading
 
 import aiohttp
 import discord
+import edge_tts
 import streamlit as st
 from discord import app_commands
 from discord.ext import commands, tasks
 from discord.utils import get
 from dotenv import load_dotenv
+from edge_tts import VoicesManager
+from gtts import gTTS
+from vietnormalizer import VietnameseNormalizer
 
 import server
 from acb import *
 from guild import *
 
+normalizer = VietnameseNormalizer()
+text = "Số tiền là 70,000đ"
+text_normalized = normalizer.normalize(text)
+print(text_normalized)
+# tts = gTTS(text_normalized, lang="vi")
+# tts.save("output.mp3")
+# os.system("start output.mp3")
+#
+tts = Vieneu(mode="turbo")
+
+# 1. Simple synthesis (uses default Southern Male voice 'Xuân Vĩnh')
+# text = "Chào bạn. Tôi là VieNeu-TTS, tôi có thể giúp bạn đọc sách, làm chatbot thời gian thực, thậm chí clone giọng nói của bạn."
+audio = tts.infer(text=text_normalized)
+
+# Save to file
+tts.save(audio, "test.wav")
+print("💾 Saved to output_Xuân Vĩnh.wav")
 load_dotenv()
 
-USERNAME = os.environ.get("username")
+USERNAME = "vvwnnm"  # os.environ.get("username")
 PASSWORD = os.environ.get("password")
 
 intents = discord.Intents.default()
@@ -263,7 +284,25 @@ def myStyle(log_queue):
                 if rs:
                     INFO = rs
 
-    client.run(os.environ.get("botToken"))
+    # client.run(os.environ.get("botToken"))
+    max_retries = 3
+    retry_delay = 30  # giây
+    for attempt in range(max_retries):
+        try:
+            client.run(os.environ.get("botToken"))
+            break
+        except discord.errors.HTTPException as e:
+            if e.status == 429:
+                print(
+                    f"Rate limited! Chờ {retry_delay}s... (lần {attempt + 1}/{max_retries})"
+                )
+                time.sleep(retry_delay)
+                retry_delay *= 2  # Exponential backoff
+            else:
+                raise
+        except Exception as e:
+            print(f"Lỗi khác: {e}")
+            break
 
 
 thread = None
