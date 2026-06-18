@@ -7,7 +7,3 @@ msgpack
 flask
 dotenv
 aiodns
-vietnormalizer
-gtts
-edge_tts
-vieneu

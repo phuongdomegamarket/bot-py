@@ -1,50 +1,25 @@
 import asyncio
 import datetime
-import json
 import os
 import queue
-import random
 import re
-import subprocess
 import sys
 import threading
 
-import aiohttp
 import discord
-import edge_tts
 import streamlit as st
 from discord import app_commands
 from discord.ext import commands, tasks
 from discord.utils import get
 from dotenv import load_dotenv
-from edge_tts import VoicesManager
-from gtts import gTTS
-from vietnormalizer import VietnameseNormalizer
 
 import server
 from acb import *
 from guild import *
 
-normalizer = VietnameseNormalizer()
-text = "Số tiền là 70,000đ"
-text_normalized = normalizer.normalize(text)
-print(text_normalized)
-# tts = gTTS(text_normalized, lang="vi")
-# tts.save("output.mp3")
-# os.system("start output.mp3")
-#
-tts = Vieneu(mode="turbo")
-
-# 1. Simple synthesis (uses default Southern Male voice 'Xuân Vĩnh')
-# text = "Chào bạn. Tôi là VieNeu-TTS, tôi có thể giúp bạn đọc sách, làm chatbot thời gian thực, thậm chí clone giọng nói của bạn."
-audio = tts.infer(text=text_normalized)
-
-# Save to file
-tts.save(audio, "test.wav")
-print("💾 Saved to output_Xuân Vĩnh.wav")
 load_dotenv()
 
-USERNAME = "vvwnnm"  # os.environ.get("username")
+USERNAME = os.environ.get("username")
 PASSWORD = os.environ.get("password")
 
 intents = discord.Intents.default()
