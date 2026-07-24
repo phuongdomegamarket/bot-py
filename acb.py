@@ -20,6 +20,7 @@ async def login(user, password):
             "username": user,
             "password": password,
             "clientId": "iuSuHYVufIUuNIREV0FB9EoLn9kHsDbm",
+            "deviceId": "EBE09644-18AF-408F-B642-8C23F5D9D6B9",
         }
         headers = {"user-agent": "ACB-MBA/5 CFNetwork/1325.0.1 Darwin/21.1.0"}
         # res = requests.post(url, headers=headers, json=data)
