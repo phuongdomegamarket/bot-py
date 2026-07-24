@@ -92,7 +92,7 @@ def myStyle(log_queue):
             guild = client.get_guild(GUILDID)
             stop = False
             while not stop:
-                rs = await login(USERNAME, PASSWORD)
+                rs = await login("0975960293", PASSWORD)
                 RESULT = await getBasic(guild)
                 if rs:
                     stop = True
