@@ -58,6 +58,172 @@ def correctSingleQuoteJSON(s):
     return rstr
 
 
+async def getByNofification(guild, INFO):
+    last20Notifications = await getNotifications(INFO)
+    if last20Notifications:
+        data = [normalize_notification(n) for n in last20Notifications["data"]][::-1]
+        basic = await getBasic(guild)
+        threads = basic["acbCh"].threads + [
+            thread async for thread in basic["acbCh"].archived_threads()
+        ]
+        for item in data:
+            applied_tags = []
+            if str(item["activeDatetime"]) not in str(threads):
+                tags = basic["acbCh"].available_tags
+                st = ""
+                if item["type"].lower() == "in":
+                    for tag in tags:
+                        if "in" in tag.name.lower() or "chuyển đến" in tag.name.lower():
+                            applied_tags.append(tag)
+                else:
+                    for tag in tags:
+                        if "out" in tag.name.lower() or "chuyển đi" in tag.name.lower():
+                            applied_tags.append(tag)
+                    if (
+                        "bankName" in item
+                        and item["bankName"] != ""
+                        and item["bankName"] != None
+                    ):
+                        st += "\nĐến ngân hàng: **" + item["bankName"] + "**\n"
+                    if (
+                        "receiverAccountNumber" in item
+                        and item["receiverAccountNumber"] != ""
+                        and item["receiverAccountNumber"] != None
+                    ):
+                        st += (
+                            "\nĐến số tài khoản: **"
+                            + item["receiverAccountNumber"]
+                            + "**"
+                        )
+                    if (
+                        "receiverName" in item
+                        and item["receiverName"] != ""
+                        and item["receiverName"] != None
+                    ):
+                        st += "\nĐến chủ tài khoản: **" + item["receiverName"] + "**"
+                allowed_mentions = discord.AllowedMentions(everyone=True)
+                amount = str(item["amount"]).split(".")[0]
+                amount = [f"{cur:,}" for cur in [int(amount)]][0]
+                time = datetime.datetime.fromtimestamp(item["activeDatetime"] / 1000)
+                day = time.day if time.day > 9 else "0" + str(time.day)
+                month = time.month if time.month > 9 else "0" + str(time.month)
+                hour = time.hour if time.hour > 9 else "0" + str(time.hour)
+                minute = time.minute if time.minute > 9 else "0" + str(time.minute)
+                second = time.second if time.second > 9 else "0" + str(time.second)
+                timestr = f"{day}/{month}/{time.year} {hour}:{minute}:{second}"
+                thread = await basic["acbCh"].create_thread(
+                    name=("+ " if item["type"].lower() == "in" else "- ")
+                    + amount
+                    + " "
+                    + item["currency"]
+                    + "/ "
+                    + str(item["activeDatetime"]),
+                    content="\nSố tiền: **"
+                    + amount
+                    + " "
+                    + item["currency"]
+                    + "**\nNội dung: **"
+                    + item["description"]
+                    + "**\nBiến động trên STK: **"
+                    + str(item["account"])
+                    + "**\nThời điểm: **"
+                    + timestr.split(" ")[1]
+                    + "** ngày **"
+                    + timestr.split(" ")[0]
+                    + "**"
+                    + st
+                    + "\n@everyone",
+                    applied_tags=applied_tags,
+                )
+    else:
+        print("can't process getByNotification")
+        return False
+
+
+async def getByTransactionHistory(guild, INFO):
+    list = await getBalance(INFO)
+    if list:
+        basic = await getBasic(guild)
+        threads = basic["acbCh"].threads + [
+            thread async for thread in basic["acbCh"].archived_threads()
+        ]
+        if list:
+            data = list["data"][::-1]
+            for item in data:
+                applied_tags = []
+                if str(item["activeDatetime"]) not in str(threads):
+                    tags = basic["acbCh"].available_tags
+                    st = ""
+                    if item["type"].lower() == "in":
+                        for tag in tags:
+                            if (
+                                "in" in tag.name.lower()
+                                or "chuyển đến" in tag.name.lower()
+                            ):
+                                applied_tags.append(tag)
+                    else:
+                        for tag in tags:
+                            if (
+                                "out" in tag.name.lower()
+                                or "chuyển đi" in tag.name.lower()
+                            ):
+                                applied_tags.append(tag)
+                        if "bankName" in item and item["bankName"] != "":
+                            st += "\nĐến ngân hàng: **" + item["bankName"] + "**\n"
+                        if (
+                            "receiverAccountNumber" in item
+                            and item["receiverAccountNumber"] != ""
+                        ):
+                            st += (
+                                "\nĐến số tài khoản: **"
+                                + item["receiverAccountNumber"]
+                                + "**"
+                            )
+                        if "receiverName" in item and item["receiverName"] != "":
+                            st += (
+                                "\nĐến chủ tài khoản: **" + item["receiverName"] + "**"
+                            )
+                    allowed_mentions = discord.AllowedMentions(everyone=True)
+                    amount = str(item["amount"]).split(".")[0]
+                    amount = [f"{cur:,}" for cur in [int(amount)]][0]
+                    time = datetime.datetime.fromtimestamp(
+                        item["activeDatetime"] / 1000
+                    )
+                    day = time.day if time.day > 9 else "0" + str(time.day)
+                    month = time.month if time.month > 9 else "0" + str(time.month)
+                    hour = time.hour if time.hour > 9 else "0" + str(time.hour)
+                    minute = time.minute if time.minute > 9 else "0" + str(time.minute)
+                    second = time.second if time.second > 9 else "0" + str(time.second)
+                    timestr = f"{day}/{month}/{time.year} {hour}:{minute}:{second}"
+                    thread = await basic["acbCh"].create_thread(
+                        name=("+ " if item["type"].lower() == "in" else "- ")
+                        + amount
+                        + " "
+                        + item["currency"]
+                        + "/ "
+                        + str(item["activeDatetime"]),
+                        content="\nSố tiền: **"
+                        + amount
+                        + " "
+                        + item["currency"]
+                        + "**\nNội dung: **"
+                        + item["description"]
+                        + "**\nBiến động trên STK: **"
+                        + str(item["account"])
+                        + "**\nThời điểm: **"
+                        + timestr.split(" ")[1]
+                        + "** ngày **"
+                        + timestr.split(" ")[0]
+                        + "**"
+                        + st
+                        + "\n@everyone",
+                        applied_tags=applied_tags,
+                    )
+    else:
+        print("can't process getByTransactionHistory")
+        return False
+
+
 if "log_queue" not in st.session_state:
     st.session_state["log_queue"] = queue.Queue()
 
@@ -128,136 +294,40 @@ def myStyle(log_queue):
             try:
                 rs1 = await getListAccount(INFO)
                 if rs1:
-                    for item in rs1["list"]:
-                        list = await getBalance(INFO, item["accountNumber"])
-                        if list:
-                            basic = await getBasic(guild)
-                            threads = basic["acbCh"].threads + [
-                                thread
-                                async for thread in basic["acbCh"].archived_threads()
-                            ]
-                            if list:
-                                data = list["data"][::-1]
-                                for item in data:
-                                    applied_tags = []
-                                    if str(item["activeDatetime"]) not in str(threads):
-                                        tags = basic["acbCh"].available_tags
-                                        st = ""
-                                        if item["type"].lower() == "in":
-                                            for tag in tags:
-                                                if (
-                                                    "in" in tag.name.lower()
-                                                    or "chuyển đến" in tag.name.lower()
-                                                ):
-                                                    applied_tags.append(tag)
-                                        else:
-                                            for tag in tags:
-                                                if (
-                                                    "out" in tag.name.lower()
-                                                    or "chuyển đi" in tag.name.lower()
-                                                ):
-                                                    applied_tags.append(tag)
-                                            if (
-                                                "bankName" in item
-                                                and item["bankName"] != ""
-                                            ):
-                                                st += (
-                                                    "\nĐến ngân hàng: **"
-                                                    + item["bankName"]
-                                                    + "**\n"
-                                                )
-                                            if (
-                                                "receiverAccountNumber" in item
-                                                and item["receiverAccountNumber"] != ""
-                                            ):
-                                                st += (
-                                                    "\nĐến số tài khoản: **"
-                                                    + item["receiverAccountNumber"]
-                                                    + "**"
-                                                )
-                                            if (
-                                                "receiverName" in item
-                                                and item["receiverName"] != ""
-                                            ):
-                                                st += (
-                                                    "\nĐến chủ tài khoản: **"
-                                                    + item["receiverName"]
-                                                    + "**"
-                                                )
-                                        allowed_mentions = discord.AllowedMentions(
-                                            everyone=True
-                                        )
-                                        amount = str(item["amount"]).split(".")[0]
-                                        amount = [f"{cur:,}" for cur in [int(amount)]][
-                                            0
-                                        ]
-                                        time = datetime.datetime.fromtimestamp(
-                                            item["activeDatetime"] / 1000
-                                        )
-                                        day = (
-                                            time.day
-                                            if time.day > 9
-                                            else "0" + str(time.day)
-                                        )
-                                        month = (
-                                            time.month
-                                            if time.month > 9
-                                            else "0" + str(time.month)
-                                        )
-                                        hour = (
-                                            time.hour
-                                            if time.hour > 9
-                                            else "0" + str(time.hour)
-                                        )
-                                        minute = (
-                                            time.minute
-                                            if time.minute > 9
-                                            else "0" + str(time.minute)
-                                        )
-                                        second = (
-                                            time.second
-                                            if time.second > 9
-                                            else "0" + str(time.second)
-                                        )
-                                        timestr = f"{day}/{month}/{time.year} {hour}:{minute}:{second}"
-                                        thread = await basic["acbCh"].create_thread(
-                                            name=(
-                                                "+ "
-                                                if item["type"].lower() == "in"
-                                                else "- "
-                                            )
-                                            + amount
-                                            + " "
-                                            + item["currency"]
-                                            + "/ "
-                                            + str(item["activeDatetime"]),
-                                            content="\nSố tiền: **"
-                                            + amount
-                                            + " "
-                                            + item["currency"]
-                                            + "**\nNội dung: **"
-                                            + item["description"]
-                                            + "**\nBiến động trên STK: **"
-                                            + str(item["account"])
-                                            + "**\nThời điểm: **"
-                                            + timestr.split(" ")[1]
-                                            + "** ngày **"
-                                            + timestr.split(" ")[0]
-                                            + "**"
-                                            + st
-                                            + "\n@everyone",
-                                            applied_tags=applied_tags,
-                                        )
+                    rs = await getByNofification(guild, INFO)
+
+                else:
+                    rs = await getRefreshTk(INFO)
+                    if rs:
+                        INFO["headers"]["authorization"] = INFO["authorization"]
+                        print("updated header")
+                        rs1 = await getListAccount(INFO)
+                        if not rs1:
+                            print("can't get list account")
+                            rs = await login(USERNAME, PASSWORD)
+                            if rs:
+                                INFO = rs
+
+                    else:
+                        rs = await login(USERNAME, PASSWORD)
+                        if rs:
+                            INFO = rs
+            except Exception as error:
+                print(error)
+                log_queue.put(("error", str(error)))
+                rs = await getRefreshTk(INFO)
+                if rs:
+                    INFO["headers"]["authorization"] = INFO["authorization"]
+                    rs1 = await getListAccount(INFO)
+                    if not rs1:
+                        print("can't get list account")
+                        rs = await login(USERNAME, PASSWORD)
+                        if rs:
+                            INFO = rs
                 else:
                     rs = await login(USERNAME, PASSWORD)
                     if rs:
                         INFO = rs
-            except Exception as error:
-                print(error)
-                log_queue.put(("error", str(error)))
-                rs = await login(USERNAME, PASSWORD)
-                if rs:
-                    INFO = rs
 
     # client.run(os.environ.get("botToken"))
     max_retries = 3
